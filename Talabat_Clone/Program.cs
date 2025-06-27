@@ -2,6 +2,8 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
+using Persistence.Repositories;
+using Services;
 
 namespace Talabat_Clone;
 
@@ -25,6 +27,8 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         builder.Services.AddScoped<IDbInializer, DbInializer>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddAutoMapper(typeof(AssemblyReferences).Assembly);
         
         #endregion
         var app = builder.Build();
