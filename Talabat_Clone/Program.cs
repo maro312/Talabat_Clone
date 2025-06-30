@@ -1,3 +1,4 @@
+using Abstraction;
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -29,6 +30,7 @@ public class Program
         builder.Services.AddScoped<IDbInializer, DbInializer>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddAutoMapper(typeof(AssemblyReferences).Assembly);
+        builder.Services.AddScoped<IServicesManger, ServicesManger>();
         
         #endregion
         var app = builder.Build();
