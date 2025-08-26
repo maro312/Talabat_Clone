@@ -8,4 +8,9 @@ public interface IProductServices
     Task<ProductDto> GetProductsByIdAsync(int id);
     Task<IEnumerable<BrandDto>> GetAllBrandsAsync();   
     Task<IEnumerable<TypeDto>> GetAllTypesAsync();   
+    Task<ProductDto> AddProductAsync(ProductCreateDto productDto);
+    Task<ProductDto> UpdateProductAsync(int id, ProductCreateDto productDto);
+    Task<bool> DeleteProductAsync(int id);
+
+
 }

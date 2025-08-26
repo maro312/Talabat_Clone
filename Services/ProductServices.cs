@@ -38,4 +38,46 @@ public class ProductServices(IUnitOfWork unitOfWork,IMapper mapper): IProductSer
         var MappedTypes = mapper.Map<IEnumerable<ProductType>,IEnumerable<TypeDto>>(types);
         return MappedTypes;
     }
+    
+    public async Task<ProductDto> AddProductAsync(ProductCreateDto productDto)
+    {
+        var repo = unitOfWork.GetRepository<Product, int>();
+        var productEntity = mapper.Map<Product>(productDto);
+
+        repo.Add(productEntity);
+        await unitOfWork.SaveChangesAsync();
+
+        return mapper.Map<ProductDto>(productEntity);
+    }
+
+    public async Task<ProductDto> UpdateProductAsync(int id, ProductCreateDto productDto)
+    {
+        var repo = unitOfWork.GetRepository<Product, int>();
+        var productEntity = await repo.GetByIdAsync(id);
+
+        if (productEntity == null)
+            throw new KeyNotFoundException($"Product with id {id} not found.");
+
+        // Map updated fields into existing entity
+        mapper.Map(productDto, productEntity);
+
+        repo.Update(productEntity);
+        await unitOfWork.SaveChangesAsync();
+
+        return mapper.Map<ProductDto>(productEntity);
+    }
+    public async Task<bool> DeleteProductAsync(int id)
+    {
+        var repo = unitOfWork.GetRepository<Product, int>();
+        var product = await repo.GetByIdAsync(id);
+
+        if (product == null)
+            return false; // Not found
+
+        repo.Delete(product);
+        await unitOfWork.SaveChangesAsync();
+
+        return true;
+    }
+
 }

@@ -39,4 +39,44 @@ public class ProductController(IServicesManger servicesManger) : ControllerBase
         var Product = await servicesManger.ProductServices.GetProductsByIdAsync(id);
         return Ok(Product);
     }
+    [HttpPost]
+    public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductCreateDto productDto)
+    {
+        if (productDto == null)
+            return BadRequest("Product data is required");
+
+        var createdProduct = await servicesManger.ProductServices.AddProductAsync(productDto);
+
+        return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.Id }, createdProduct);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ProductDto>> UpdateProduct(int id, [FromBody] ProductCreateDto productDto)
+    {
+        if (productDto == null)
+            return BadRequest("Product data is required");
+
+        try
+        {
+            var updatedProduct = await servicesManger.ProductServices.UpdateProductAsync(id, productDto);
+            return Ok(updatedProduct);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProduct(int id)
+    {
+        var result = await servicesManger.ProductServices.DeleteProductAsync(id);
+
+        if (!result)
+            return NotFound($"Product with id {id} not found.");
+
+        return NoContent(); // 204 No Content
+    }
+
+    
 }
